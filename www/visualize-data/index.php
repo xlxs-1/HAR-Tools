@@ -51,14 +51,14 @@ if (isset($_SESSION["email"])) {
     var cfg = {//  https://www.patrick-wied.at/static/heatmapjs/example-heatmap-leaflet.html
       // radius should be small ONLY if scaleRadius is true (or small radius is intended)
       // if scaleRadius is false it will be the constant radius used in pixels
-      "radius": 1,
+      "radius": 3,
       "maxOpacity": .8,
       // scales the radius based on map zoom
       "scaleRadius": true,
       // if set to false the heatmap uses the global maximum for colorization
       // if activated: uses the data maximum within the current map boundaries
       //   (there will always be a red spot with useLocalExtremas true)
-      "useLocalExtrema": true,
+      "useLocalExtrema": false,
       // which field name in your data represents the latitude - default "lat"
       latField: 'y',
       // which field name in your data represents the longitude - default "lng"
@@ -83,7 +83,7 @@ if (isset($_SESSION["email"])) {
         console.log(result);
         let arr=JSON.parse("["+result+"]");
         var testData = {
-          max: 200,
+          max: 10,
           data: arr
         };
         console.log(arr);

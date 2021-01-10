@@ -108,13 +108,15 @@ class Database
 
     return rtrim($ar,",");//[{y: 24.6408, x:46.7728, count: 3},{y: 50.75, x:-1.55, count: 1},{y: 39.73, x:-104.99, count: 1},{y: 42.33, x:-104.39, count: 2}]
   }
-  public function getHttp_requests_(){
+  public function getHttp_requestsAsJsonPoints_(){
     $sql = "SELECT * FROM http_requests";
 
     $stmt = $this->databaseHandle->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result();
-    return $result->fetch_assoc();
+    for ($ar = ""; $row = $result->fetch_assoc(); $ar = $ar .'{"x":'.$row["longitude"].",".'"y":'.$row["latitude"].',"count":1},');
+
+    return rtrim($ar,",");//[{y: 24.6408, x:46.7728, count: 3},{y: 50.75, x:-1.55, count: 1},{y: 39.73, x:-104.99, count: 1},{y: 42.33, x:-104.39, count: 2}]
   }
 }
 function isPasswordOK($string)
