@@ -48,13 +48,15 @@ if (isset($_SESSION["email"])) {
     var mapLayer=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'})
 
 
-    var cfg = {//  https://www.patrick-wied.at/static/heatmapjs/example-heatmap-leaflet.html
+    var cfg = {//  https://www.patrick-wied.at/static/heatmapjs/example-heatmap-leaflet.html  https://www.patrick-wied.at/static/heatmapjs/docs.html#h337-create
       // radius should be small ONLY if scaleRadius is true (or small radius is intended)
       // if scaleRadius is false it will be the constant radius used in pixels
-      "radius": 3,
-      "maxOpacity": .8,
+      "radius": 150,
+      "maxOpacity": 1,
+      "minOpacity": 0,
+      "blur":1,
       // scales the radius based on map zoom
-      "scaleRadius": true,
+      "scaleRadius": false,
       // if set to false the heatmap uses the global maximum for colorization
       // if activated: uses the data maximum within the current map boundaries
       //   (there will always be a red spot with useLocalExtremas true)
