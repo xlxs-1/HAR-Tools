@@ -235,7 +235,7 @@ class ResponseStatusStats{
   public $server_error=0;//0xx
   public function parse($statusCode){//  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
     //$methodType=strtoupper($methodType);
-    $firstDigit=substr($statusCode, 0, 1);
+    $statusCode=substr($statusCode, 0, 1);
     switch ($statusCode) {
       case 1:
         ++$this->informational;
