@@ -2,7 +2,7 @@
 include ($_SERVER["DOCUMENT_ROOT"].'/../utils.php');
 if (isset($_SESSION["email"])&&isset($_POST["button"])&&isset($_POST["isp"])&&isset($_POST["ip"])&&$_POST["isp"]&&$_POST["ip"]) {
   $database=new Database();
-  $uploadedAtLeast1har=false;
+  $harFilesUploaded=0;
   if(isset($_FILES["filename"]["tmp_name"])){
     $numberOfFiles=count($_FILES["filename"]["tmp_name"]);
 
@@ -10,9 +10,9 @@ if (isset($_SESSION["email"])&&isset($_POST["button"])&&isset($_POST["isp"])&&is
     $ipDetailsCache=[];
     for($i=0;$i<$numberOfFiles;++$i) {
       if(!$_FILES["filename"]["error"][$i]){
-        $uploadedAtLeast1har=true;
         $jFile=json_decode((file_get_contents($_FILES["filename"]["tmp_name"][$i])),true);
         if (!json_last_error()) {
+          $harFilesUploaded=$harFilesUploaded+1;
           for ($ii=0; $ii < count($jFile["log"]["entries"]); ++$ii) { 
             if(isset($jFile["log"]["entries"][$ii]["serverIPAddress"])&&$jFile["log"]["entries"][$ii]["serverIPAddress"]){
               if (isset($ipDetailsCache[$jFile["log"]["entries"][$ii]["serverIPAddress"]])) {
@@ -33,8 +33,11 @@ if (isset($_SESSION["email"])&&isset($_POST["button"])&&isset($_POST["isp"])&&is
     }
     //echo"<br>{$debug_externalRequestsPerformed}<br>";
   }
-  if($uploadedAtLeast1har){
+  if($harFilesUploaded>0){
     $database->insertUsers_footprint($_SESSION["email"],$_POST["isp"],$_POST["ip"]);
+    $database->updateUserLastUploadDATETIME($_SESSION["email"]);
+    $database->increaseUserNumber_of_uploadsBy($_SESSION["email"],$harFilesUploaded);
+    $database->increaseRequestMethodStatsBy(-2,-2,-2,-2,-2,-2,-2,-2);///////todo
   }
 }
 ?>

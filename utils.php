@@ -70,6 +70,24 @@ class Database
     $ok = $stmt->execute();
     return $ok;
   }
+  public function updateUserLastUploadDATETIME($withEmail)
+  {
+    $sql = "UPDATE users SET last_upload =NOW() WHERE email = ?";
+
+    $stmt = $this->databaseHandle->prepare($sql);
+    $stmt->bind_param("s",$withEmail);
+    $ok = $stmt->execute();
+    return $ok;
+  }
+  public function increaseUserNumber_of_uploadsBy($withEmail,$increaseBy)
+  {
+    $sql = "UPDATE users SET number_of_uploads = number_of_uploads + ? WHERE email = ?";
+
+    $stmt = $this->databaseHandle->prepare($sql);
+    $stmt->bind_param("is",$increaseBy,$withEmail);
+    $ok = $stmt->execute();
+    return $ok;
+  }
   public function countUsers()
   {
     $sql = "SELECT COUNT(*) FROM users";
@@ -117,6 +135,16 @@ class Database
     for ($ar = ""; $row = $result->fetch_assoc(); $ar = $ar .'{"x":'.$row["longitude"].",".'"y":'.$row["latitude"].',"count":1},');
 
     return rtrim($ar,",");//[{y: 24.6408, x:46.7728, count: 3},{y: 50.75, x:-1.55, count: 1},{y: 39.73, x:-104.99, count: 1},{y: 42.33, x:-104.39, count: 2}]
+  }
+
+  public function increaseRequestMethodStatsBy($get,$head,$post,$put,$delete_,$connect,$options,$trace)
+  {
+    $sql = "UPDATE request_method_stats SET get = get + ?, head = head + ?, post = post + ?, put = put + ?, delete_ = delete_ + ?, connect = connect + ?, options = options + ?, trace = trace + ?";
+
+    $stmt = $this->databaseHandle->prepare($sql);
+    $stmt->bind_param("iiiiiiii",$get,$head,$post,$put,$delete_,$connect,$options,$trace);
+    $ok = $stmt->execute();
+    return $ok;
   }
 }
 function isPasswordOK($string)
