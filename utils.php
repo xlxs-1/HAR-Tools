@@ -146,6 +146,121 @@ class Database
     $ok = $stmt->execute();
     return $ok;
   }
+  public function getRequestMethodStats()
+  {
+    $sql = "SELECT * FROM request_method_stats";
+
+    $stmt = $this->databaseHandle->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    return $result->fetch_assoc();
+  }
+
+  public function increaseResponseStatusStatsBy($informational,$successful,$redirection,$clientError,$serverError)
+  {
+    $sql = "UPDATE response_status_stats SET informational = informational + ?, successful = successful + ?, redirection = redirection + ?, client_error = client_error + ?, server_error = server_error + ?";
+
+    $stmt = $this->databaseHandle->prepare($sql);
+    $stmt->bind_param("iiiii",$informational,$successful,$redirection,$clientError,$serverError);
+    $ok = $stmt->execute();
+    return $ok;
+  }
+  public function getResponseStatusStats()
+  {
+    $sql = "SELECT * FROM response_status_stats";
+
+    $stmt = $this->databaseHandle->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    return $result->fetch_assoc();
+  }
+}
+class RequestMethodStats{
+  public $get=0;
+  public $head=0;
+  public $post=0;
+  public $put=0;
+  public $delete_=0;
+  public $connect=0;
+  public $options=0;
+  public $trace=0;
+  public function parse($methodType){
+    $methodType=strtoupper($methodType);
+    switch ($methodType) {
+      case 'GET':
+        ++$this->get;
+        break;
+      //
+      case 'HEAD':
+        ++$this->head;
+        break;
+      //
+      case 'POST':
+        ++$this->post;
+        break;
+      //
+      case 'PUT':
+        ++$this->put;
+        break;
+      //
+      case 'DELETE_':
+        ++$this->delete_;
+        break;
+      //
+      case 'CONNECT':
+        ++$this->connect;
+        break;
+      //
+      case 'OPTIONS':
+        ++$this->options;
+        break;
+      //
+      case 'TRACE':
+        ++$this->trace;
+        break;
+      //
+      default:
+        # Non common method type in 2021 no need to parse.
+        break;
+    }
+  }
+}
+class ResponseStatusStats{
+  public $informational=0;//0xx
+  public $successful=0;//0xx
+  public $redirection=0;//0xx
+  public $client_error=0;//0xx
+  public $server_error=0;//0xx
+  public function parse($statusCode){//  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+    //$methodType=strtoupper($methodType);
+    $firstDigit=substr($statusCode, 0, 1);
+    switch ($statusCode) {
+      case 1:
+        ++$this->informational;
+        break;
+      //
+      case 2:
+        ++$this->successful;
+        break;
+      //
+      case 3:
+        ++$this->redirection;
+        break;
+      //
+      case 4:
+        ++$this->client_error;
+        break;
+      //
+      case 5:
+        ++$this->server_error;
+        break;
+      //
+      default:
+        break;
+    }
+  }
 }
 function isPasswordOK($string)
 {

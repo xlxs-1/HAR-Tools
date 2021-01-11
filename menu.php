@@ -15,6 +15,14 @@
           <a class="nav-link" href="/account/">View Account</a>
           <a class="nav-link" href="/har-upload/">Har file uploader</a>
           <a class="nav-link" href="/visualize-data/">Visualize uploaded data</a>
+          <?php
+            if (isset($_SESSION["email"])) {
+              include_once($_SERVER["DOCUMENT_ROOT"].'/../utils.php');
+              if ((new Database())->getAccount_($_SESSION["email"])["is_admin"]) {
+                echo'<a class="nav-link" href="/statistics/">Statistics</a>';
+              }
+            }
+          ?>
           <a class="nav-link" href="/logout/">Logout</a>
           <?php endif?>
         </div>

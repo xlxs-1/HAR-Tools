@@ -2,6 +2,8 @@
 include ($_SERVER["DOCUMENT_ROOT"].'/../utils.php');
 if (isset($_SESSION["email"])&&isset($_POST["button"])&&isset($_POST["isp"])&&isset($_POST["ip"])&&$_POST["isp"]&&$_POST["ip"]) {
   $database=new Database();
+  $requestMethodStats=new RequestMethodStats();
+  $responseStatusStats=new ResponseStatusStats();
   $harFilesUploaded=0;
   if(isset($_FILES["filename"]["tmp_name"])){
     $numberOfFiles=count($_FILES["filename"]["tmp_name"]);
@@ -14,7 +16,7 @@ if (isset($_SESSION["email"])&&isset($_POST["button"])&&isset($_POST["isp"])&&is
         if (!json_last_error()) {
           $harFilesUploaded=$harFilesUploaded+1;
           for ($ii=0; $ii < count($jFile["log"]["entries"]); ++$ii) { 
-            if(isset($jFile["log"]["entries"][$ii]["serverIPAddress"])&&$jFile["log"]["entries"][$ii]["serverIPAddress"]){
+            if(isset($jFile["log"]["entries"][$ii]["serverIPAddress"])&&$jFile["log"]["entries"][$ii]["serverIPAddress"]){//parse serverIPAddress to x,y
               if (isset($ipDetailsCache[$jFile["log"]["entries"][$ii]["serverIPAddress"]])) {
                 $details=$ipDetailsCache[$jFile["log"]["entries"][$ii]["serverIPAddress"]];
               }else{
@@ -25,6 +27,12 @@ if (isset($_SESSION["email"])&&isset($_POST["button"])&&isset($_POST["isp"])&&is
               if (isset($details["latitude"])&&isset($details["longitude"])&&is_numeric($details["latitude"])&&is_numeric($details["longitude"])) {
                 $database->insertHttp_request($_SESSION["email"],$details["latitude"],$details["longitude"]);
               }
+            }
+            if(isset($jFile["log"]["entries"][$ii]["request"]["method"])){//parse request method type
+              $requestMethodStats->parse($jFile["log"]["entries"][$ii]["request"]["method"]);
+            }
+            if(isset($jFile["log"]["entries"][$ii]["response"]["status"])){//parse response status stats
+              $responseStatusStats->parse($jFile["log"]["entries"][$ii]["response"]["status"]);
             }
           }
         }
@@ -37,7 +45,8 @@ if (isset($_SESSION["email"])&&isset($_POST["button"])&&isset($_POST["isp"])&&is
     $database->insertUsers_footprint($_SESSION["email"],$_POST["isp"],$_POST["ip"]);
     $database->updateUserLastUploadDATETIME($_SESSION["email"]);
     $database->increaseUserNumber_of_uploadsBy($_SESSION["email"],$harFilesUploaded);
-    $database->increaseRequestMethodStatsBy(-2,-2,-2,-2,-2,-2,-2,-2);///////todo
+    $database->increaseRequestMethodStatsBy($requestMethodStats->get,$requestMethodStats->head,$requestMethodStats->post,$requestMethodStats->put,$requestMethodStats->delete_,$requestMethodStats->connect,$requestMethodStats->options,$requestMethodStats->trace);
+    $database->increaseResponseStatusStatsBy($responseStatusStats->informational,$responseStatusStats->successful,$responseStatusStats->redirection,$responseStatusStats->client_error,$responseStatusStats->server_error);
   }
 }
 ?>
