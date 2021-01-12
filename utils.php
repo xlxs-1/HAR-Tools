@@ -176,6 +176,24 @@ class Database
     
     return $result->fetch_assoc();
   }
+
+  public function insertRequestUrl($host){
+    $sql = "INSERT INTO request_urls (url) VALUES (?)";
+
+    $stmt = $this->databaseHandle->prepare($sql);
+    $stmt->bind_param("s", $host);
+    $ok = $stmt->execute();
+    return $ok;
+  }
+  public function getUniqueRequestUrls(){
+    $sql = "SELECT COUNT(DISTINCT(url)) FROM request_urls";//  https://www.w3resource.com/sql/aggregate-functions/count-with-distinct.php
+
+    $stmt = $this->databaseHandle->prepare($sql);
+    echo("Error description: " . $this->databaseHandle -> error);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_array()[0];
+    return $result;
+  }
 }
 class RequestMethodStats{
   public $get=0;
@@ -260,6 +278,16 @@ class ResponseStatusStats{
       default:
         break;
     }
+  }
+}
+
+class RequestUrls{//urls here
+  public function parseAndAddToDb($requestUrl){
+    $parsed=parse_url($requestUrl);
+    if ($parsed&&isset($parsed["host"])&&$parsed["host"]) {
+      return (new Database)->insertRequestUrl($parsed["host"]);
+    }
+    return false;
   }
 }
 function isPasswordOK($string)

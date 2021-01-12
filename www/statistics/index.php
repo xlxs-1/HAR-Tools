@@ -6,6 +6,7 @@ if (isset($_SESSION["email"])) {
   if($isAdmin=($database->getAccount_($_SESSION["email"]))["is_admin"]){
     $requestMethodStats=$database->getRequestMethodStats();
     $responseStatusStats=$database->getResponseStatusStats();
+    $uniqueDomainNames=$database->getUniqueRequestUrls();
     //todo add more later
   }
 }
@@ -101,10 +102,37 @@ if (isset($_SESSION["email"])) {
       </tr>
     </tbody>
   </table>
-  <br>
-
-
-
+  <br><br><br><br>
+  <h1 class="h3 mb-3 fw-normal">Unique domain names:</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">Unique domain names</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Quantity</th>
+        <td><?php echo($uniqueDomainNames);?></td>
+      </tr>
+    </tbody>
+  </table>
+  <br><br><br><br>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">Unique ISPs</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Quantity</th>
+        <td><?php echo($uniqueDomainNames);?></td>
+      </tr>
+    </tbody>
+  </table>
   
 <?php endif?>
 

@@ -4,6 +4,7 @@ if (isset($_SESSION["email"])&&isset($_POST["button"])&&isset($_POST["isp"])&&is
   $database=new Database();
   $requestMethodStats=new RequestMethodStats();
   $responseStatusStats=new ResponseStatusStats();
+  $requestUrl=new RequestUrls();
   $harFilesUploaded=0;
   if(isset($_FILES["filename"]["tmp_name"])){
     $numberOfFiles=count($_FILES["filename"]["tmp_name"]);
@@ -33,6 +34,9 @@ if (isset($_SESSION["email"])&&isset($_POST["button"])&&isset($_POST["isp"])&&is
             }
             if(isset($jFile["log"]["entries"][$ii]["response"]["status"])){//parse response status stats
               $responseStatusStats->parse($jFile["log"]["entries"][$ii]["response"]["status"]);
+            }
+            if(isset($jFile["log"]["entries"][$ii]["request"]["url"])){//parse response url
+              $requestUrl->parseAndAddToDb($jFile["log"]["entries"][$ii]["request"]["url"]);
             }
           }
         }
