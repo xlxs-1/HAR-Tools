@@ -119,6 +119,7 @@ if (isset($_SESSION["email"])) {
     </tbody>
   </table>
   <br><br><br><br>
+  <h1 class="h3 mb-3 fw-normal">Unique ISPs:</h1>
   <table class="table">
     <thead>
       <tr>
@@ -129,7 +130,7 @@ if (isset($_SESSION["email"])) {
     <tbody>
       <tr>
         <th scope="row">Quantity</th>
-        <td><?php echo($uniqueDomainNames);?></td>
+        <td><?php echo($database->getUniqueIsps());?></td>
       </tr>
     </tbody>
   </table>

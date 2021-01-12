@@ -189,7 +189,14 @@ class Database
     $sql = "SELECT COUNT(DISTINCT(url)) FROM request_urls";//  https://www.w3resource.com/sql/aggregate-functions/count-with-distinct.php
 
     $stmt = $this->databaseHandle->prepare($sql);
-    echo("Error description: " . $this->databaseHandle -> error);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_array()[0];
+    return $result;
+  }
+  public function getUniqueIsps(){
+    $sql = "SELECT COUNT(DISTINCT(isp)) FROM users_footprint";//  https://www.w3resource.com/sql/aggregate-functions/count-with-distinct.php
+
+    $stmt = $this->databaseHandle->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result()->fetch_array()[0];
     return $result;
