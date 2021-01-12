@@ -13,7 +13,7 @@ function sanitizeAndSaveHar(harFile,name){
             console.log("Sensitive info found:\ncookies:\n"+JSON.stringify(har["log"]["entries"][entry][element2]["cookies"]));
             har["log"]["entries"][entry][element2]["cookies"]=undefined;
           }
-        }
+        }//todo add also "name": "Cookie"  (in headers)
       }
 
       downloadToFile(JSON.stringify(har),name,'text/plain');
