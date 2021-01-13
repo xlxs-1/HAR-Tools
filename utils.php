@@ -106,6 +106,14 @@ class Database
     $ok = $stmt->execute();
     return $ok;
   }
+  public function getUniqueIsps(){
+    $sql = "SELECT COUNT(DISTINCT(isp)) FROM users_footprint";//  https://www.w3resource.com/sql/aggregate-functions/count-with-distinct.php
+
+    $stmt = $this->databaseHandle->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_array()[0];
+    return $result;
+  }
 
   public function insertHttp_request($email, $latitude,$longitude){
     $sql = "INSERT INTO http_requests (email,latitude,longitude) VALUES (?,?,?)";
@@ -193,13 +201,28 @@ class Database
     $result = $stmt->get_result()->fetch_array()[0];
     return $result;
   }
-  public function getUniqueIsps(){
-    $sql = "SELECT COUNT(DISTINCT(isp)) FROM users_footprint";//  https://www.w3resource.com/sql/aggregate-functions/count-with-distinct.php
+
+  public function insertContentTypesAges($type,$age){
+    $sql = "INSERT INTO content_types_ages (type,age) VALUES (?,?)";
 
     $stmt = $this->databaseHandle->prepare($sql);
+    $stmt->bind_param("ss",$type,$age);
+    $ok = $stmt->execute();
+    return $ok;
+  }
+  public function getUniqueContentTypesAgesAverage(){//https://stackoverflow.com/a/25414507/5941827
+    $sql = "SELECT type,FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(age))) FROM content_types_ages GROUP BY type ";//  https://www.w3resource.com/sql/aggregate-functions/count-with-distinct.php
+
+    $stmt = $this->databaseHandle->prepare($sql);
+    //var_dump(mysqli_error($this->databaseHandle));
     $stmt->execute();
-    $result = $stmt->get_result()->fetch_array()[0];
-    return $result;
+    $result = $stmt->get_result();
+    $ar=[];
+    for ($i=0;$row = $result->fetch_assoc();++$i) {
+      $ar[$i]["type"]=$row["type"];
+      $ar[$i]["age"]=$row["FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(age)))"];
+    }
+    return $ar;
   }
 }
 class RequestMethodStats{
@@ -293,6 +316,33 @@ class RequestUrls{//urls here
     $parsed=parse_url($requestUrl);
     if ($parsed&&isset($parsed["host"])&&$parsed["host"]) {
       return (new Database)->insertRequestUrl($parsed["host"]);
+    }
+    return false;
+  }
+}
+
+class ContentTypeAges{
+  public function parseHeadersAndAddToDb($searchInHeaders){
+    $contentType=false;
+    $age=false;
+    for ($i=0; $i < count($searchInHeaders); $i++) { 
+      
+      if(isset($searchInHeaders[$i]["name"])&&$searchInHeaders[$i]["name"]=="Content-Type"&&isset($searchInHeaders[$i]["value"])&&$searchInHeaders[$i]["value"]){
+        $contentType=$searchInHeaders[$i]["value"];
+      }
+      if(isset($searchInHeaders[$i]["name"])&&$searchInHeaders[$i]["name"]=="content-type"&&isset($searchInHeaders[$i]["value"])&&$searchInHeaders[$i]["value"]){
+        $contentType=$searchInHeaders[$i]["value"];
+      }
+      if(isset($searchInHeaders[$i]["name"])&&$searchInHeaders[$i]["name"]=="date"&&isset($searchInHeaders[$i]["value"])&&$searchInHeaders[$i]["value"]){
+        $age=$searchInHeaders[$i]["value"];
+      }
+      if(isset($searchInHeaders[$i]["name"])&&$searchInHeaders[$i]["name"]=="Date"&&isset($searchInHeaders[$i]["value"])&&$searchInHeaders[$i]["value"]){
+        $age=$searchInHeaders[$i]["value"];
+      }
+    }
+    if ($contentType&&$age) {
+      $age = DateTime::createFromFormat('D, d M Y H:i:s *', $age);
+      if ($age) (new Database())->insertContentTypesAges($contentType,$age->format('Y-m-d H:i:s'));//  https://www.php.net/manual/en/datetime.createfromformat.php#117462
     }
     return false;
   }

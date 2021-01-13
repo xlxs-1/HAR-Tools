@@ -20,6 +20,7 @@
               include_once($_SERVER["DOCUMENT_ROOT"].'/../utils.php');
               if ((new Database())->getAccount_($_SESSION["email"])["is_admin"]) {
                 echo'<a class="nav-link" href="/statistics/">Statistics</a>';
+                echo'<a class="nav-link" href="/statistics/content-type-age">Content Type Age Statistics</a>';
               }
             }
           ?>

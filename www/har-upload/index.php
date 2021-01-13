@@ -5,6 +5,7 @@ if (isset($_SESSION["email"])&&isset($_POST["button"])&&isset($_POST["isp"])&&is
   $requestMethodStats=new RequestMethodStats();
   $responseStatusStats=new ResponseStatusStats();
   $requestUrl=new RequestUrls();
+  $contentTypeAges=new ContentTypeAges();
   $harFilesUploaded=0;
   if(isset($_FILES["filename"]["tmp_name"])){
     $numberOfFiles=count($_FILES["filename"]["tmp_name"]);
@@ -35,8 +36,14 @@ if (isset($_SESSION["email"])&&isset($_POST["button"])&&isset($_POST["isp"])&&is
             if(isset($jFile["log"]["entries"][$ii]["response"]["status"])){//parse response status stats
               $responseStatusStats->parse($jFile["log"]["entries"][$ii]["response"]["status"]);
             }
-            if(isset($jFile["log"]["entries"][$ii]["request"]["url"])){//parse response url
+            if(isset($jFile["log"]["entries"][$ii]["request"]["url"])){//parse request url
               $requestUrl->parseAndAddToDb($jFile["log"]["entries"][$ii]["request"]["url"]);
+            }
+            if(isset($jFile["log"]["entries"][$ii]["request"]["headers"])){//parse request headers
+              $contentTypeAges->parseHeadersAndAddToDb($jFile["log"]["entries"][$ii]["request"]["headers"]);
+            }
+            if(isset($jFile["log"]["entries"][$ii]["response"]["headers"])){//parse request headers
+              $contentTypeAges->parseHeadersAndAddToDb($jFile["log"]["entries"][$ii]["response"]["headers"]);
             }
           }
         }
