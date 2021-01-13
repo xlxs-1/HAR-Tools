@@ -48,7 +48,7 @@ if (isset($_SESSION["email"])) {
 <?php if ($isAdmin):?>
   <?php include ($_SERVER["DOCUMENT_ROOT"]."/../menu.php");?>
   <h1 class="h3 mb-3 fw-normal">Average date per Content-Type:</h1>
-  <div class="container">
+  <div class="container-fluid">
   <table class="table">
     <thead>
       <tr>
