@@ -224,6 +224,56 @@ class Database
     }
     return $ar;
   }
+
+  public function insertEntryTimings($timing,$content_type,$dateTime,$http_method,$isp){
+    $sql = "INSERT INTO entries_timings (timing,content_type,date_time,http_method,isp) VALUES (?,?,?,?,?)";
+
+    $stmt = $this->databaseHandle->prepare($sql);
+    $stmt->bind_param("issis",$timing,$content_type,$dateTime,$http_method,$isp);
+    $ok = $stmt->execute();
+    return $ok;
+  }
+  public function getEntryTimingsAveragedPerDatePerHourJSON($type){//todotodooooooooooooooooooo https://stackoverflow.com/a/45876902/5941827                 https://stackoverflow.com/a/25414507/5941827
+    //$sql = "SELECT (AVG(timing)) FROM entries_timings GROUP BY weekday(date_time),hour(date_time)";//  https://stackoverflow.com/a/14846088/5941827
+    $sql="SELECT * FROM (SELECT weekday(date_time),hour(date_time),(AVG(timing)),(COUNT(timing)) FROM entries_timings GROUP BY weekday(date_time),hour(date_time)) temp  ";//test
+    //$sql="SELECT weekday(date_time),hour(date_time),(AVG(timing)) FROM entries_timings GROUP BY weekday(date_time),hour(date_time)";//ok
+    $stmt = $this->databaseHandle->prepare($sql);
+    //var_dump(mysqli_error($this->databaseHandle));
+    $stmt->execute();
+    $result = $stmt->get_result(); 
+    //echo '<pre>';
+    
+    // for ($ar = ""; $row = $result->fetch_assoc(); $ar = $ar .'{"x":'.$row["hour(date_time)"].",".'"y":'.$row["(AVG(timing))"].'},'){
+    //   var_dump($row);
+    // }
+    $ar=[];
+    for (; $row = $result->fetch_assoc();){
+      $ar[$row["weekday(date_time)"]][$row["hour(date_time)"]]["avg"]=intval($row["(AVG(timing))"]);
+      $ar[$row["weekday(date_time)"]][$row["hour(date_time)"]]["count"]=$row["(COUNT(timing))"];
+    }
+    //var_dump($ar);
+    $avgPerH=[];
+    for($h=0;$h<24;++$h){
+      $avgPerH[$h]=0;
+      $count=0;
+      for($d=0;$d<7;++$d){
+        if (isset($ar[$d][$h])) {
+          $avgPerH[$h]+=$ar[$d][$h]["avg"]*$ar[$d][$h]["count"];
+          $count+=$ar[$d][$h]["count"];
+        }
+      }
+      if ($count) {
+        $avgPerH[$h]/=$count;
+      }
+    }
+    //var_dump($avgPerH);
+    $jsonn="[";
+    for($i=0;$i<count($avgPerH);++$i){
+      $jsonn=$jsonn.$avgPerH[$i].",";
+    }
+    $jsonn[-1]="]";
+    return $jsonn;
+  }
 }
 class RequestMethodStats{
   public $get=0;
@@ -253,7 +303,7 @@ class RequestMethodStats{
         ++$this->put;
         break;
       //
-      case 'DELETE_':
+      case 'DELETE':
         ++$this->delete_;
         break;
       //
@@ -347,6 +397,73 @@ class ContentTypeAges{
     return false;
   }
 }
+
+class TimingsWithExtraData{//todo todoooooooooooooooo
+  public static function encode($method){
+    $method=strtoupper($method);
+    $encoded=false;
+    switch ($method) {
+      case 'GET':
+        $encoded=0;
+        break;
+      //
+      case 'HEAD':
+        $encoded=1;
+        break;
+      //
+      case 'POST':
+        $encoded=2;
+        break;
+      //
+      case 'PUT':
+        $encoded=3;
+        break;
+      //
+      case 'DELETE':
+        $encoded=4;
+        break;
+      //
+      case 'CONNECT':
+        $encoded=5;
+        break;
+      //
+      case 'OPTIONS':
+        $encoded=6;
+        break;
+      //
+      case 'TRACE':
+        $encoded=7;
+        break;
+      //
+      default:
+        # Non common method type in 2021 no need to parse.
+        break;
+    }
+    if ($encoded===false){
+      return false;
+    }else {
+      return $encoded;
+    }
+
+  }
+  public function parseEntryAndAddTimingsAndExtraInfoToDb($searchInEntry,$isp){
+    if (isset($searchInEntry["timings"]["wait"])&&$searchInEntry["timings"]["wait"]&&isset($searchInEntry["request"]["headers"])&&isset($searchInEntry["startedDateTime"])&&isset($searchInEntry["request"]["method"])) {
+      $timing=$searchInEntry["timings"]["wait"];
+      $dateTime=$searchInEntry["startedDateTime"];//
+      $method=$searchInEntry["request"]["method"];
+      $contentType=false;
+      for ($i=0; $i <count($searchInEntry["request"]["headers"]); $i++) { 
+        if (isset($searchInEntry["request"]["headers"][$i]["name"])&&strtolower($searchInEntry["request"]["headers"][$i]["name"])=="content-type"&&isset($searchInEntry["request"]["headers"][$i]["value"])) {
+          $contentType=$searchInEntry["request"]["headers"][$i]["value"];
+        }
+      }
+      if(!$contentType)return false;
+      if (($method=$this->encode($method))===false) return false;
+      return (new Database())->insertEntryTimings($timing,$contentType,$dateTime,$method,$isp);
+    }
+  }
+}
+
 function isPasswordOK($string)
 {
   if (strlen($string) < 8) {
