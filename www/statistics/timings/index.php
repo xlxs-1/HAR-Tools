@@ -56,9 +56,7 @@ if (isset($_SESSION["email"])) {
       var ctx = document.getElementById('myChart').getContext('2d');
       var chart=undefined;
       function updateChart(dataa){
-        dataa=JSON.parse(dataa);
         console.log(dataa)
-        //if (chart)chart.destroy();
         
         chart = new Chart(ctx, {
           type: 'line',
@@ -75,46 +73,75 @@ if (isset($_SESSION["email"])) {
         });
       }
       function updateChartOnSubmit(){
-        updateChart(aa);
-      //   $.ajax({/*data:xy,*/cache:false,method:"POST", url: "/geoQueriesAPI.php", success: function(result){
-        
-      //   console.log(result);
-      //   let arr=JSON.parse("["+result+"]");
-      //   var testData = {
-      //     max: 10,
-      //     data: arr
-      //   };
-      //   console.log(arr);
-      //   heatmapLayer.setData(testData);
-      // }});
+        //updateChart(aa);
+        $.ajax({/*data:xy,*/cache:false,method:"POST", url: "/timingsAPI.php", success: function(result){
+        var labels=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
+        basic.labels=labels;
+        basic.datasets[0].data=JSON.parse(result);
+        updateChart(basic);
+      }});
       }
-      var aa={
+      var basic={
         labels: ['Red','Redd', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
         datasets: [{
-            label: '# of Votes',
+            label: 'Average Time per hour',
             data: [12,12, 19, 3, 5, 2, 3],
             backgroundColor: [
                 'rgba(0, 0, 0, .3)',
-                'rgba(0, 0, 0, .5)',
                 'rgba(54, 162, 235, 0.2)',
                 'rgba(255, 206, 86, 0.2)',
                 'rgba(75, 192, 192, 0.2)',
                 'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
             ],
             borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(255, 99, 132, 1)',
+                'rgba(0, 0, 0, 1)',
                 'rgba(54, 162, 235, 1)',
                 'rgba(255, 206, 86, 1)',
                 'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
+                'rgba(153, 102, 255,1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255,1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255,1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255,1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255,1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255,1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255,1)',
+                'rgba(255, 159, 64, 1)',
             ],
             borderWidth: 2,hoverBorderWidth:18,cubicInterpolationMode:'monotone'
         }]
     };
-    aa=JSON.stringify(aa);
+    //basic=JSON.stringify(basic);
     </script>
   </div>
   <button class="w-100 btn btn-lg btn-success" type="submit" value="updateData" name="button" form="form1" onclick="updateChartOnSubmit()">Update</button>
