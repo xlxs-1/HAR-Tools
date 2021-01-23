@@ -233,14 +233,15 @@ class Database
     $ok = $stmt->execute();
     return $ok;
   }
-  public function getEntryTimingsAveragedPerDatePerHourJSON($contentTypeFilter,$Monday,$Tuesday,$Wednesday,$Thursday,$Friday,$Saturday,$Sunday){// https://stackoverflow.com/a/45876902/5941827                 https://stackoverflow.com/a/25414507/5941827
+  public function getEntryTimingsAveragedPerDatePerHourJSON($contentTypeFilter,$Monday,$Tuesday,$Wednesday,$Thursday,$Friday,$Saturday,$Sunday,$get,$head,$post,$put,$delete,$connect,$options,$trace){// https://stackoverflow.com/a/45876902/5941827                 https://stackoverflow.com/a/25414507/5941827
     if ($contentTypeFilter) {
-      $sql="SELECT * FROM (SELECT weekday(date_time),hour(date_time),(AVG(timing)),(COUNT(timing)) FROM entries_timings WHERE content_type LIKE ? GROUP BY weekday(date_time),hour(date_time)) temp  ";
+      $sql="SELECT * FROM (SELECT weekday(date_time),hour(date_time),(AVG(timing)),(COUNT(timing)) FROM entries_timings WHERE content_type LIKE ? AND (http_method=? OR http_method=? OR http_method=? OR http_method=? OR http_method=? OR http_method=? OR http_method=? OR http_method=?) GROUP BY weekday(date_time),hour(date_time)) temp  ";
       $stmt = $this->databaseHandle->prepare($sql);
-      $stmt->bind_param("s",$contentTypeFilter);
+      $stmt->bind_param("siiiiiiii",$contentTypeFilter,$get,$head,$post,$put,$delete,$connect,$options,$trace);
     }else {
-      $sql="SELECT * FROM (SELECT weekday(date_time),hour(date_time),(AVG(timing)),(COUNT(timing)) FROM entries_timings GROUP BY weekday(date_time),hour(date_time)) temp  ";
+      $sql="SELECT * FROM (SELECT weekday(date_time),hour(date_time),(AVG(timing)),(COUNT(timing)) FROM entries_timings WHERE (http_method=? OR http_method=? OR http_method=? OR http_method=? OR http_method=? OR http_method=? OR http_method=? OR http_method=?) GROUP BY weekday(date_time),hour(date_time)) temp  ";
       $stmt = $this->databaseHandle->prepare($sql);
+      $stmt->bind_param("iiiiiiii",$get,$head,$post,$put,$delete,$connect,$options,$trace);
     }
     //var_dump(mysqli_error($this->databaseHandle));
     $stmt->execute();

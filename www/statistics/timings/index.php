@@ -74,7 +74,7 @@ if (isset($_SESSION["email"])) {
       }
       function updateChartOnSubmit(){
         //updateChart(aa);
-        $.ajax({/*data:xy,*/cache:false,method:"POST", url: "/timingsAPI.php",data:{contentFilter:document.getElementById("contentTypes").value,Monday:document.getElementById("Monday").checked,Tuesday:document.getElementById("Tuesday").checked,Wednesday:document.getElementById("Wednesday").checked,Thursday:document.getElementById("Thursday").checked,Friday:document.getElementById("Friday").checked,Saturday:document.getElementById("Saturday").checked,Sunday:document.getElementById("Sunday").checked}, success: function(result){
+        $.ajax({/*data:xy,*/cache:false,method:"POST", url: "/timingsAPI.php",data:{contentFilter:document.getElementById("contentTypes").value,Monday:document.getElementById("Monday").checked,Tuesday:document.getElementById("Tuesday").checked,Wednesday:document.getElementById("Wednesday").checked,Thursday:document.getElementById("Thursday").checked,Friday:document.getElementById("Friday").checked,Saturday:document.getElementById("Saturday").checked,Sunday:document.getElementById("Sunday").checked,get:document.getElementById("GET").checked,head:document.getElementById("HEAD").checked,post:document.getElementById("POST").checked,put:document.getElementById("PUT").checked,delete:document.getElementById("DELETE").checked,connect:document.getElementById("CONNECT").checked,options:document.getElementById("OPTIONS").checked,trace:document.getElementById("TRACE").checked}, success: function(result){
         console.log(result);
         var labels=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
         basic.labels=labels;
@@ -147,25 +147,56 @@ if (isset($_SESSION["email"])) {
   </div>
   <button class="w-100 btn btn-lg btn-success" type="submit" value="updateData" name="button"  onclick="updateChartOnSubmit()">Update</button><br><br><br>
 
-  <label>Filters:</label><br><br>
+  <h1 class="h4 mb-3 fw-normal">Filters:</h1><br><br>
   <form class="form-sign" action="" method="post" id="form1">
-    <input type="text" class="form-control" aria-describedby="contentTypesHelp" placeholder="Filter based on Content Type" value="" id="contentTypes">
-    <small id="contentTypesHelp" class="form-text text-muted">Leave empty for all.</small>
+    <h1 class="h5 mb-0 fw-normal">Filter based on Content Type:</h1>
+    <div class="border border-primary">
+      <input type="text" class="form-control" aria-describedby="contentTypesHelp" placeholder="Filter based on Content Type" value="" id="contentTypes">
+      <small id="contentTypesHelp" class="form-text text-muted">Leave empty for all.</small>
+    </div>
     <br><br>
-    <input class="form-check-input" type="checkbox" value="Monday" id="Monday" checked>
-    <label class="form-check-label" for="Monday">Monday</label>                               <br>
-    <input class="form-check-input" type="checkbox" value="Tuesday" id="Tuesday" checked>
-    <label class="form-check-label" for="Tuesday">Tuesday</label>                               <br>
-    <input class="form-check-input" type="checkbox" value="Wednesday" id="Wednesday" checked>
-    <label class="form-check-label" for="Wednesday">Wednesday</label>                               <br>
-    <input class="form-check-input" type="checkbox" value="Thursday" id="Thursday" checked>
-    <label class="form-check-label" for="Thursday">Thursday</label>                               <br>
-    <input class="form-check-input" type="checkbox" value="Friday" id="Friday" checked>
-    <label class="form-check-label" for="Friday">Friday</label>                               <br>
-    <input class="form-check-input" type="checkbox" value="Saturday" id="Saturday" checked>
-    <label class="form-check-label" for="Saturday">Saturday</label>                               <br>
-    <input class="form-check-input" type="checkbox" value="Sunday" id="Sunday" checked>
-    <label class="form-check-label" for="Sunday">Sunday</label>
+    <!--<h1 class="h5 mb-0 fw-normal">Filter based on ISP:</h1>
+    <div class="border border-primary">
+      <input type="text" class="form-control" aria-describedby="isp" placeholder="Filter based on ISP" value="" id="isp">
+      <small id="isp" class="form-text text-muted">Leave empty for all.</small>
+    </div>-->
+    <br><br>
+    <h1 class="h5 mb-0 fw-normal">Filter based on Dates:</h1>
+    <div class="border border-primary">
+      <input class="form-check-input" type="checkbox" value="Monday" id="Monday" checked>
+      <label class="form-check-label" for="Monday">Monday</label>                               <br>
+      <input class="form-check-input" type="checkbox" value="Tuesday" id="Tuesday" checked>
+      <label class="form-check-label" for="Tuesday">Tuesday</label>                               <br>
+      <input class="form-check-input" type="checkbox" value="Wednesday" id="Wednesday" checked>
+      <label class="form-check-label" for="Wednesday">Wednesday</label>                               <br>
+      <input class="form-check-input" type="checkbox" value="Thursday" id="Thursday" checked>
+      <label class="form-check-label" for="Thursday">Thursday</label>                               <br>
+      <input class="form-check-input" type="checkbox" value="Friday" id="Friday" checked>
+      <label class="form-check-label" for="Friday">Friday</label>                               <br>
+      <input class="form-check-input" type="checkbox" value="Saturday" id="Saturday" checked>
+      <label class="form-check-label" for="Saturday">Saturday</label>                               <br>
+      <input class="form-check-input" type="checkbox" value="Sunday" id="Sunday" checked>
+      <label class="form-check-label" for="Sunday">Sunday</label>
+    </div><br><br>
+    <h1 class="h5 mb-0 fw-normal">Filter based on Http methods:</h1>
+    <div class="border border-primary">
+      <input class="form-check-input" type="checkbox" value="GET" id="GET" checked>
+      <label class="form-check-label" for="GET">GET</label>                               <br>
+      <input class="form-check-input" type="checkbox" value="HEAD" id="HEAD" checked>
+      <label class="form-check-label" for="HEAD">HEAD</label>                               <br>
+      <input class="form-check-input" type="checkbox" value="POST" id="POST" checked>
+      <label class="form-check-label" for="POST">POST</label>                               <br>
+      <input class="form-check-input" type="checkbox" value="PUT" id="PUT" checked>
+      <label class="form-check-label" for="PUT">PUT</label>                               <br>
+      <input class="form-check-input" type="checkbox" value="DELETE" id="DELETE" checked>
+      <label class="form-check-label" for="DELETE">DELETE</label>                               <br>
+      <input class="form-check-input" type="checkbox" value="CONNECT" id="CONNECT" checked>
+      <label class="form-check-label" for="CONNECT">CONNECT</label>                               <br>
+      <input class="form-check-input" type="checkbox" value="OPTIONS" id="OPTIONS" checked>
+      <label class="form-check-label" for="OPTIONS">OPTIONS</label>                               <br>
+      <input class="form-check-input" type="checkbox" value="TRACE" id="TRACE" checked>
+      <label class="form-check-label" for="TRACE">TRACE</label>
+    </div>
   </form>
   <br>
 <?php endif?>
