@@ -74,7 +74,7 @@ if (isset($_SESSION["email"])) {
       }
       function updateChartOnSubmit(){
         //updateChart(aa);
-        $.ajax({/*data:xy,*/cache:false,method:"POST", url: "/timingsAPI.php",data:{contentFilter:document.getElementById("contentTypes").value}, success: function(result){
+        $.ajax({/*data:xy,*/cache:false,method:"POST", url: "/timingsAPI.php",data:{contentFilter:document.getElementById("contentTypes").value,Monday:document.getElementById("Monday").checked,Tuesday:document.getElementById("Tuesday").checked,Wednesday:document.getElementById("Wednesday").checked,Thursday:document.getElementById("Thursday").checked,Friday:document.getElementById("Friday").checked,Saturday:document.getElementById("Saturday").checked,Sunday:document.getElementById("Sunday").checked}, success: function(result){
         console.log(result);
         var labels=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
         basic.labels=labels;
@@ -149,10 +149,25 @@ if (isset($_SESSION["email"])) {
 
   <label>Filters:</label><br><br>
   <form class="form-sign" action="" method="post" id="form1">
-  <input type="text" class="form-control" aria-describedby="contentTypesHelp" placeholder="Filter based on Content Type" value="" id="contentTypes">
-  <small id="contentTypesHelp" class="form-text text-muted">Leave empty for all.</small>
+    <input type="text" class="form-control" aria-describedby="contentTypesHelp" placeholder="Filter based on Content Type" value="" id="contentTypes">
+    <small id="contentTypesHelp" class="form-text text-muted">Leave empty for all.</small>
+    <br><br>
+    <input class="form-check-input" type="checkbox" value="Monday" id="Monday" checked>
+    <label class="form-check-label" for="Monday">Monday</label>                               <br>
+    <input class="form-check-input" type="checkbox" value="Tuesday" id="Tuesday" checked>
+    <label class="form-check-label" for="Tuesday">Tuesday</label>                               <br>
+    <input class="form-check-input" type="checkbox" value="Wednesday" id="Wednesday" checked>
+    <label class="form-check-label" for="Wednesday">Wednesday</label>                               <br>
+    <input class="form-check-input" type="checkbox" value="Thursday" id="Thursday" checked>
+    <label class="form-check-label" for="Thursday">Thursday</label>                               <br>
+    <input class="form-check-input" type="checkbox" value="Friday" id="Friday" checked>
+    <label class="form-check-label" for="Friday">Friday</label>                               <br>
+    <input class="form-check-input" type="checkbox" value="Saturday" id="Saturday" checked>
+    <label class="form-check-label" for="Saturday">Saturday</label>                               <br>
+    <input class="form-check-input" type="checkbox" value="Sunday" id="Sunday" checked>
+    <label class="form-check-label" for="Sunday">Sunday</label>
   </form>
-  
+  <br>
 <?php endif?>
 
 

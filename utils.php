@@ -252,16 +252,48 @@ class Database
       $ar[$row["weekday(date_time)"]][$row["hour(date_time)"]]["count"]=$row["(COUNT(timing))"];
     }
     //var_dump($ar);
+    //var_dump($ar);
     $avgPerH=[];
     for($h=0;$h<24;++$h){
       $avgPerH[$h]=0;
       $count=0;
-      for($d=0;$d<7;++$d){
-        if (isset($ar[$d][$h])) {
-          $avgPerH[$h]+=$ar[$d][$h]["avg"]*$ar[$d][$h]["count"];
-          $count+=$ar[$d][$h]["count"];
+      if($Monday)
+        if (isset($ar[0][$h])) {
+          $avgPerH[$h]+=$ar[0][$h]["avg"]*$ar[0][$h]["count"];
+          $count+=$ar[0][$h]["count"];
         }
-      }
+      if($Tuesday)
+        if (isset($ar[1][$h])) {
+          $avgPerH[$h]+=$ar[1][$h]["avg"]*$ar[1][$h]["count"];
+          $count+=$ar[1][$h]["count"];
+        }
+      if($Wednesday)
+        if (isset($ar[2][$h])) {
+          $avgPerH[$h]+=$ar[2][$h]["avg"]*$ar[2][$h]["count"];
+          $count+=$ar[2][$h]["count"];
+        }
+      if($Thursday)
+        if (isset($ar[3][$h])) {
+          $avgPerH[$h]+=$ar[3][$h]["avg"]*$ar[3][$h]["count"];
+          $count+=$ar[3][$h]["count"];
+        }
+      if($Friday)
+        if (isset($ar[4][$h])) {
+          $avgPerH[$h]+=$ar[4][$h]["avg"]*$ar[4][$h]["count"];
+          $count+=$ar[4][$h]["count"];
+        }
+      if($Saturday)
+        if (isset($ar[5][$h])) {
+          $avgPerH[$h]+=$ar[5][$h]["avg"]*$ar[5][$h]["count"];
+          $count+=$ar[5][$h]["count"];
+        }
+      if($Sunday)
+        if (isset($ar[6][$h])) {
+          $avgPerH[$h]+=$ar[6][$h]["avg"]*$ar[6][$h]["count"];
+          $count+=$ar[6][$h]["count"];
+        }
+
+      
       if ($count) {
         $avgPerH[$h]/=$count;
       }
