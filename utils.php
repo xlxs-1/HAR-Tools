@@ -233,19 +233,19 @@ class Database
     $ok = $stmt->execute();
     return $ok;
   }
-  public function getEntryTimingsAveragedPerDatePerHourJSON($type){//todotodooooooooooooooooooo https://stackoverflow.com/a/45876902/5941827                 https://stackoverflow.com/a/25414507/5941827
-    //$sql = "SELECT (AVG(timing)) FROM entries_timings GROUP BY weekday(date_time),hour(date_time)";//  https://stackoverflow.com/a/14846088/5941827
-    $sql="SELECT * FROM (SELECT weekday(date_time),hour(date_time),(AVG(timing)),(COUNT(timing)) FROM entries_timings GROUP BY weekday(date_time),hour(date_time)) temp  ";//test
-    //$sql="SELECT weekday(date_time),hour(date_time),(AVG(timing)) FROM entries_timings GROUP BY weekday(date_time),hour(date_time)";//ok
-    $stmt = $this->databaseHandle->prepare($sql);
+  public function getEntryTimingsAveragedPerDatePerHourJSON($contentTypeFilter,$Monday,$Tuesday,$Wednesday,$Thursday,$Friday,$Saturday,$Sunday){// https://stackoverflow.com/a/45876902/5941827                 https://stackoverflow.com/a/25414507/5941827
+    if ($contentTypeFilter) {
+      $sql="SELECT * FROM (SELECT weekday(date_time),hour(date_time),(AVG(timing)),(COUNT(timing)) FROM entries_timings WHERE content_type LIKE ? GROUP BY weekday(date_time),hour(date_time)) temp  ";
+      $stmt = $this->databaseHandle->prepare($sql);
+      $stmt->bind_param("s",$contentTypeFilter);
+    }else {
+      $sql="SELECT * FROM (SELECT weekday(date_time),hour(date_time),(AVG(timing)),(COUNT(timing)) FROM entries_timings GROUP BY weekday(date_time),hour(date_time)) temp  ";
+      $stmt = $this->databaseHandle->prepare($sql);
+    }
     //var_dump(mysqli_error($this->databaseHandle));
     $stmt->execute();
     $result = $stmt->get_result(); 
-    //echo '<pre>';
-    
-    // for ($ar = ""; $row = $result->fetch_assoc(); $ar = $ar .'{"x":'.$row["hour(date_time)"].",".'"y":'.$row["(AVG(timing))"].'},'){
-    //   var_dump($row);
-    // }
+
     $ar=[];
     for (; $row = $result->fetch_assoc();){
       $ar[$row["weekday(date_time)"]][$row["hour(date_time)"]]["avg"]=intval($row["(AVG(timing))"]);

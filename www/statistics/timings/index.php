@@ -57,7 +57,7 @@ if (isset($_SESSION["email"])) {
       var chart=undefined;
       function updateChart(dataa){
         console.log(dataa)
-        
+        if(chart)chart.destroy();
         chart = new Chart(ctx, {
           type: 'line',
           data:dataa,
@@ -74,7 +74,8 @@ if (isset($_SESSION["email"])) {
       }
       function updateChartOnSubmit(){
         //updateChart(aa);
-        $.ajax({/*data:xy,*/cache:false,method:"POST", url: "/timingsAPI.php", success: function(result){
+        $.ajax({/*data:xy,*/cache:false,method:"POST", url: "/timingsAPI.php",data:{contentFilter:document.getElementById("contentTypes").value}, success: function(result){
+        console.log(result);
         var labels=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
         basic.labels=labels;
         basic.datasets[0].data=JSON.parse(result);
@@ -144,7 +145,14 @@ if (isset($_SESSION["email"])) {
     //basic=JSON.stringify(basic);
     </script>
   </div>
-  <button class="w-100 btn btn-lg btn-success" type="submit" value="updateData" name="button" form="form1" onclick="updateChartOnSubmit()">Update</button>
+  <button class="w-100 btn btn-lg btn-success" type="submit" value="updateData" name="button"  onclick="updateChartOnSubmit()">Update</button><br><br><br>
+
+  <label>Filters:</label><br><br>
+  <form class="form-sign" action="" method="post" id="form1">
+  <input type="text" class="form-control" aria-describedby="contentTypesHelp" placeholder="Filter based on Content Type" value="" id="contentTypes">
+  <small id="contentTypesHelp" class="form-text text-muted">Leave empty for all.</small>
+  </form>
+  
 <?php endif?>
 
 
