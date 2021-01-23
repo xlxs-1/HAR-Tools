@@ -7,7 +7,7 @@ function is_true($val, $return_null=false){//  https://www.php.net/manual/en/fun
 }
 
 $database=new Database();
-if (isset($_SESSION["email"])&&(new Database)->getAccount_($_SESSION["email"])["is_admin"]&&isset($_POST["contentFilter"])&&isset($_POST["Monday"])&&isset($_POST["Tuesday"])&&isset($_POST["Wednesday"])&&isset($_POST["Thursday"])&&isset($_POST["Friday"])&&isset($_POST["Saturday"])&&isset($_POST["Sunday"])&&isset($_POST["get"])&&isset($_POST["head"])&&isset($_POST["post"])&&isset($_POST["put"])&&isset($_POST["delete"])&&isset($_POST["connect"])&&isset($_POST["options"])&&isset($_POST["trace"])) {
+if (isset($_SESSION["email"])&&(new Database)->getAccount_($_SESSION["email"])["is_admin"]&&isset($_POST["contentFilter"])&&isset($_POST["Monday"])&&isset($_POST["Tuesday"])&&isset($_POST["Wednesday"])&&isset($_POST["Thursday"])&&isset($_POST["Friday"])&&isset($_POST["Saturday"])&&isset($_POST["Sunday"])&&isset($_POST["get"])&&isset($_POST["head"])&&isset($_POST["post"])&&isset($_POST["put"])&&isset($_POST["delete"])&&isset($_POST["connect"])&&isset($_POST["options"])&&isset($_POST["trace"])&&isset($_POST["isp"])) {
   $days["Monday"]=is_true($_POST["Monday"]);
   $days["Tuesday"]=is_true($_POST["Tuesday"]);
   $days["Wednesday"]=is_true($_POST["Wednesday"]);
@@ -28,7 +28,7 @@ if (isset($_SESSION["email"])&&(new Database)->getAccount_($_SESSION["email"])["
 
   //var_dump($days);
 
-  $arr=$database->getEntryTimingsAveragedPerDatePerHourJSON($_POST["contentFilter"],$days["Monday"],$days["Tuesday"],$days["Wednesday"],$days["Thursday"],$days["Friday"],$days["Saturday"],$days["Sunday"],$requestMethods["get"],$requestMethods["head"],$requestMethods["post"],$requestMethods["put"],$requestMethods["delete"],$requestMethods["connect"],$requestMethods["options"],$requestMethods["trace"]);
+  $arr=$database->getEntryTimingsAveragedPerDatePerHourJSON($_POST["contentFilter"],$days["Monday"],$days["Tuesday"],$days["Wednesday"],$days["Thursday"],$days["Friday"],$days["Saturday"],$days["Sunday"],$requestMethods["get"],$requestMethods["head"],$requestMethods["post"],$requestMethods["put"],$requestMethods["delete"],$requestMethods["connect"],$requestMethods["options"],$requestMethods["trace"],$_POST["isp"]);
   echo($arr);
 }
 ?>
