@@ -13,7 +13,14 @@ function sanitizeAndSaveHar(harFile,name){
             console.log("Sensitive info found:\ncookies:\n"+JSON.stringify(har["log"]["entries"][entry][element2]["cookies"]));
             har["log"]["entries"][entry][element2]["cookies"]=undefined;
           }
-        }//todo add also "name": "Cookie"  (in headers)
+          if(har["log"]["entries"][entry][element2]["headers"]){//removes "name": "Cookie"  (in headers)
+            for(i=0;i<har["log"]["entries"][entry][element2]["headers"].length;++i){
+              if (har["log"]["entries"][entry][element2]["headers"][i]["name"].toLowerCase().includes("cookie")) {
+                har["log"]["entries"][entry][element2]["headers"][i]=undefined;
+              }
+            }
+          }
+        }
       }
 
       downloadToFile(JSON.stringify(har),name,'text/plain');
