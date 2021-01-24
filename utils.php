@@ -482,7 +482,7 @@ class TimingsWithExtraData{//todo todoooooooooooooooo
     }
 
   }
-  public function parseEntryAndAddTimingsAndExtraInfoToDb($searchInEntry,$isp){
+  public function parseEntryAndAddTimingsAndExtraInfoToDb($searchInEntry,$isp){//for content types in request
     if (isset($searchInEntry["timings"]["wait"])&&$searchInEntry["timings"]["wait"]&&isset($searchInEntry["request"]["headers"])&&isset($searchInEntry["startedDateTime"])&&isset($searchInEntry["request"]["method"])) {
       $timing=$searchInEntry["timings"]["wait"];
       $dateTime=$searchInEntry["startedDateTime"];//
@@ -491,6 +491,23 @@ class TimingsWithExtraData{//todo todoooooooooooooooo
       for ($i=0; $i <count($searchInEntry["request"]["headers"]); $i++) { 
         if (isset($searchInEntry["request"]["headers"][$i]["name"])&&strtolower($searchInEntry["request"]["headers"][$i]["name"])=="content-type"&&isset($searchInEntry["request"]["headers"][$i]["value"])) {
           $contentType=$searchInEntry["request"]["headers"][$i]["value"];
+        }
+      }
+      if(!$contentType)return false;
+      if (($method=$this->encode($method))===false) return false;
+      return (new Database())->insertEntryTimings($timing,$contentType,$dateTime,$method,$isp);
+    }
+  }
+
+  public function parseEntryAndAddTimingsAndExtraInfoToDb2($searchInEntry,$isp){//for content types in response
+    if (isset($searchInEntry["timings"]["wait"])&&$searchInEntry["timings"]["wait"]&&isset($searchInEntry["response"]["headers"])&&isset($searchInEntry["startedDateTime"])&&isset($searchInEntry["request"]["method"])) {
+      $timing=$searchInEntry["timings"]["wait"];
+      $dateTime=$searchInEntry["startedDateTime"];//
+      $method=$searchInEntry["request"]["method"];
+      $contentType=false;
+      for ($i=0; $i <count($searchInEntry["response"]["headers"]); $i++) { 
+        if (isset($searchInEntry["response"]["headers"][$i]["name"])&&strtolower($searchInEntry["response"]["headers"][$i]["name"])=="content-type"&&isset($searchInEntry["response"]["headers"][$i]["value"])) {
+          $contentType=$searchInEntry["response"]["headers"][$i]["value"];
         }
       }
       if(!$contentType)return false;

@@ -46,8 +46,11 @@ if (isset($_SESSION["email"])&&isset($_POST["button"])&&isset($_POST["isp"])&&is
             if(isset($jFile["log"]["entries"][$ii]["response"]["headers"])){//parse response headers
               $contentTypeAges->parseHeadersAndAddToDb($jFile["log"]["entries"][$ii]["response"]["headers"]);
             }
-            if(isset($jFile["log"]["entries"][$ii]["timings"]["wait"])){//timings todoooooooooooo
-              $timingsWithExtraData->parseEntryAndAddTimingsAndExtraInfoToDb($jFile["log"]["entries"][$ii],$_POST["isp"]);//todo
+            if(isset($jFile["log"]["entries"][$ii]["timings"]["wait"])){//parse for request
+              $timingsWithExtraData->parseEntryAndAddTimingsAndExtraInfoToDb($jFile["log"]["entries"][$ii],$_POST["isp"]);
+            }
+            if(isset($jFile["log"]["entries"][$ii]["timings"]["wait"])){//parse for response
+              $timingsWithExtraData->parseEntryAndAddTimingsAndExtraInfoToDb2($jFile["log"]["entries"][$ii],$_POST["isp"]);
             }
           }
         }
