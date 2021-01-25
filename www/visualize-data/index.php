@@ -42,7 +42,7 @@ if (isset($_SESSION["email"])) {
 <?php if (isset($_SESSION["email"])):?>
   <?php echo"Welcome ".(isset($_SESSION["email"])?htmlspecialchars($_SESSION["email"]):"guest").".";?>
   <?php include ($_SERVER["DOCUMENT_ROOT"]."/../menu.php");?>
-  <div id="mapid" class="" style="height: 900px;"></div>
+  <div id="mapid" class="" style="height: 900px; margin-top: -44px;"></div>
   <!--<div id="mapid2" class="" style="height: 900px;"></div>-->
   <script>//https://www.youtube.com/watch?v=nZaZ2dB6pow
     var mapLayer=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'})
