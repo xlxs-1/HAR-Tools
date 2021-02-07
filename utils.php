@@ -203,15 +203,15 @@ class Database
   }
 
   public function insertContentTypesAges($type,$age){
-    $sql = "INSERT INTO content_types_ages (type,age) VALUES (?,?)";
+    $sql = "INSERT INTO content_types_ages_v2 (type,age) VALUES (?,?)";
 
     $stmt = $this->databaseHandle->prepare($sql);
-    $stmt->bind_param("ss",$type,$age);
+    $stmt->bind_param("si",$type,$age);
     $ok = $stmt->execute();
     return $ok;
   }
   public function getUniqueContentTypesAgesAverage(){//https://stackoverflow.com/a/25414507/5941827
-    $sql = "SELECT type,FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(age))) FROM content_types_ages GROUP BY type ";//  https://www.w3resource.com/sql/aggregate-functions/count-with-distinct.php
+    $sql = "SELECT type,AVG(age) FROM content_types_ages_v2 GROUP BY type";//  https://www.w3resource.com/sql/aggregate-functions/count-with-distinct.php
 
     $stmt = $this->databaseHandle->prepare($sql);
     //var_dump(mysqli_error($this->databaseHandle));
@@ -220,7 +220,7 @@ class Database
     $ar=[];
     for ($i=0;$row = $result->fetch_assoc();++$i) {
       $ar[$i]["type"]=$row["type"];
-      $ar[$i]["age"]=$row["FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(age)))"];
+      $ar[$i]["age"]=$row["AVG(age)"];
     }
     return $ar;
   }
@@ -408,7 +408,7 @@ class RequestUrls{//urls here
 }
 
 class ContentTypeAges{
-  public function parseHeadersAndAddToDb($searchInHeaders){
+  public function parseHeadersAndAddToDb($searchInHeaders,$timestampNow){
     $contentType=false;
     $age=false;
     for ($i=0; $i < count($searchInHeaders); $i++) { 
@@ -427,8 +427,8 @@ class ContentTypeAges{
       }
     }
     if ($contentType&&$age) {
-      $age = DateTime::createFromFormat('D, d M Y H:i:s *', $age);
-      if ($age) (new Database())->insertContentTypesAges($contentType,$age->format('Y-m-d H:i:s'));//  https://www.php.net/manual/en/datetime.createfromformat.php#117462
+      $age = $timestampNow-strtotime($age);
+      return(new Database())->insertContentTypesAges($contentType,$age);
     }
     return false;
   }

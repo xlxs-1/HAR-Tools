@@ -60,7 +60,7 @@ if (isset($_SESSION["email"])) {
       <?php for($i=0;$i<$size;++$i):?>
       <tr>
         <th scope="row"><?php echo($uniqueContentTypesAgesAverage[$i]["type"]);?></th>
-        <td><?php echo($uniqueContentTypesAgesAverage[$i]["age"]);?></td>
+        <td><?php $dates=$uniqueContentTypesAgesAverage[$i]["age"]/(3600.0*24);echo(number_format($dates,3)." dates");?></td>
       </tr>
       <?php endfor;?>
     </tbody>

@@ -40,11 +40,11 @@ if (isset($_SESSION["email"])&&isset($_POST["button"])&&isset($_POST["isp"])&&is
             if(isset($jFile["log"]["entries"][$ii]["request"]["url"])){//parse request url
               $requestUrl->parseAndAddToDb($jFile["log"]["entries"][$ii]["request"]["url"]);
             }
-            if(isset($jFile["log"]["entries"][$ii]["request"]["headers"])){//parse request headers
-              $contentTypeAges->parseHeadersAndAddToDb($jFile["log"]["entries"][$ii]["request"]["headers"]);
+            if(isset($jFile["log"]["entries"][$ii]["request"]["headers"])&&isset($jFile["log"]["pages"][0]["startedDateTime"])){//parse request headers
+              $contentTypeAges->parseHeadersAndAddToDb($jFile["log"]["entries"][$ii]["request"]["headers"],strtotime($jFile["log"]["pages"][0]["startedDateTime"]));
             }
-            if(isset($jFile["log"]["entries"][$ii]["response"]["headers"])){//parse response headers
-              $contentTypeAges->parseHeadersAndAddToDb($jFile["log"]["entries"][$ii]["response"]["headers"]);
+            if(isset($jFile["log"]["entries"][$ii]["response"]["headers"])&&isset($jFile["log"]["pages"][0]["startedDateTime"])){//parse response headers
+              $contentTypeAges->parseHeadersAndAddToDb($jFile["log"]["entries"][$ii]["response"]["headers"],strtotime($jFile["log"]["pages"][0]["startedDateTime"]));
             }
             if(isset($jFile["log"]["entries"][$ii]["timings"]["wait"])){//parse for request
               $timingsWithExtraData->parseEntryAndAddTimingsAndExtraInfoToDb($jFile["log"]["entries"][$ii],$_POST["isp"]);
