@@ -52,19 +52,17 @@ if (isset($_SESSION["email"])) {
   <table class="table">
     <thead>
       <tr>
-        <th scope="col"></th>
-        <?php for($i=0;$i<$size;++$i):?>
-        <th scope="col"><?php echo($uniqueContentTypesAgesAverage[$i]["type"]);?></th>
-        <?php endfor;?>
+        <th scope="col">type</th>
+        <th scope="col">age</th>
       </tr>
     </thead>
     <tbody>
+      <?php for($i=0;$i<$size;++$i):?>
       <tr>
-        <th scope="row">Quantity</th>
-        <?php for($i=0;$i<$size;++$i):?>
+        <th scope="row"><?php echo($uniqueContentTypesAgesAverage[$i]["type"]);?></th>
         <td><?php echo($uniqueContentTypesAgesAverage[$i]["age"]);?></td>
-        <?php endfor;?>
       </tr>
+      <?php endfor;?>
     </tbody>
   </table>
   </div>
@@ -76,7 +74,7 @@ if (isset($_SESSION["email"])) {
 
 
 
-
+<br><br>
 <footer class="bd-footer bg-dark text-light fixed-bottom text-center">
   <div class="container">
     <p class="mb-0">Designed for WEB by Spiros, Basilis and Aris</p>
