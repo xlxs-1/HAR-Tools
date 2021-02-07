@@ -42,7 +42,7 @@ if (isset($_POST["email"])&&isset($_POST["password"])&&isset($_POST["button"])&&
     <label for="email">Email address:</label>
     <input class="form-control me-2" type="text" name="email" value="1234" id="email" placeholder="E-mail"><br>
     <label for="password">Password:</label>
-    <input class="form-control me-2" type="text" name="password" value="1234#A67" id="password" placeholder="Password"><br>
+    <input class="form-control me-2" type="password" name="password" value="1234#A67" id="password" placeholder="Password"><br>
     <button class="w-100 btn btn-lg btn-success" type="submit" value="Login" name="button" form="form1">Log In</button>
     <!--
     <div class="checkbox mb-3">
