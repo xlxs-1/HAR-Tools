@@ -64,7 +64,6 @@ if (isset($_POST["password"])&&$error=isPasswordOK($_POST["password"])) {//passw
 <footer class="bd-footer bg-dark text-light fixed-bottom text-center">
   <div class="container">
     <p class="mb-0">Designed for WEB by Spiros, Basilis and Aris</p>
-    <p class="m-0 text-muted">&copy; 2020-2021        todo include this footer in all files</p>
   </div>
 </footer>
 </body>
